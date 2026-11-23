@@ -1,0 +1,416 @@
+{
+  "info": {
+    "name": "JunaMap · Hitos 2 y 3 (demostración)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:3000/api/v1"
+    },
+    {
+      "key": "admin_key",
+      "value": ""
+    },
+    {
+      "key": "correo",
+      "value": "demo@junamap.test"
+    },
+    {
+      "key": "clave",
+      "value": "demo12345"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "local_id",
+      "value": ""
+    },
+    {
+      "key": "pedido_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "0a. Crear cuenta de prueba (solo la primera vez; guarda el token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const d = pm.response.json();",
+              "pm.collectionVariables.set('token', d.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/auth/registro",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "auth",
+            "registro"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Cuenta Demo\",\n  \"carrera\": \"Ingeniería\",\n  \"operador\": \"Pluxee\",\n  \"correo\": \"{{correo}}\",\n  \"clave\": \"{{clave}}\",\n  \"acepta\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "0b. Ingresar (guarda el token; úsala si la cuenta ya existe)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const d = pm.response.json();",
+              "pm.collectionVariables.set('token', d.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/auth/login",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"clave\": \"{{clave}}\"\n}"
+        }
+      }
+    },
+    {
+      "name": "1. Leer: locales cercanos (400 m)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/locales?lat=-33.423&lng=-70.643&radio=400&orden=cercania",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "locales"
+          ],
+          "query": [
+            {
+              "key": "lat",
+              "value": "-33.423"
+            },
+            {
+              "key": "lng",
+              "value": "-70.643"
+            },
+            {
+              "key": "radio",
+              "value": "400"
+            },
+            {
+              "key": "orden",
+              "value": "cercania"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. Crear: local nuevo (guarda su id)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const d = pm.response.json();",
+              "pm.collectionVariables.set('local_id', d.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-admin-key",
+            "value": "{{admin_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/locales",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "locales"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Panadería La Espiga\",\n  \"categoria\": \"Panadería\",\n  \"direccion\": \"Av. Recoleta 1200\",\n  \"horario\": \"hasta las 19:00\",\n  \"tiene_menu_dia\": false,\n  \"lat\": -33.4241,\n  \"lng\": -70.6418,\n  \"menu\": [\n    {\n      \"nombre\": \"Marraqueta\",\n      \"precio\": 300\n    }\n  ],\n  \"promo\": {\n    \"titulo\": \"Pan + café\",\n    \"precio\": 1800,\n    \"precio_original\": 2400\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "3. Actualizar: cambiar horario del local creado",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-admin-key",
+            "value": "{{admin_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/locales/{{local_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "locales",
+            "{{local_id}}"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Panadería La Espiga\",\n  \"categoria\": \"Panadería\",\n  \"direccion\": \"Av. Recoleta 1200\",\n  \"horario\": \"hasta las 20:00\",\n  \"tiene_menu_dia\": false,\n  \"lat\": -33.4241,\n  \"lng\": -70.6418,\n  \"menu\": [\n    {\n      \"nombre\": \"Marraqueta\",\n      \"precio\": 300\n    }\n  ],\n  \"promo\": {\n    \"titulo\": \"Pan + café\",\n    \"precio\": 1800,\n    \"precio_original\": 2400\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "4. Borrar: el local creado",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-admin-key",
+            "value": "{{admin_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/locales/{{local_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "locales",
+            "{{local_id}}"
+          ],
+          "query": []
+        }
+      }
+    },
+    {
+      "name": "5. Crear pedido con promo (guarda su id)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const d = pm.response.json();",
+              "pm.collectionVariables.set('pedido_id', d.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/pedidos",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "pedidos"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"promo_id\": 1\n}"
+        }
+      }
+    },
+    {
+      "name": "6. Listar mis pedidos",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/pedidos",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "pedidos"
+          ],
+          "query": []
+        }
+      }
+    },
+    {
+      "name": "7. Actualizar: marcar el pedido como retirado",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/pedidos/{{pedido_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "pedidos",
+            "{{pedido_id}}"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"estado\": \"retirado\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Error 400: latitud inválida",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/locales?lat=abc&lng=-70.6",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "locales"
+          ],
+          "query": [
+            {
+              "key": "lat",
+              "value": "abc"
+            },
+            {
+              "key": "lng",
+              "value": "-70.6"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Error 404: local inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/locales/9999",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "locales",
+            "9999"
+          ],
+          "query": []
+        }
+      }
+    },
+    {
+      "name": "Error 409: cancelar un pedido ya retirado",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/pedidos/{{pedido_id}}",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "pedidos",
+            "{{pedido_id}}"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"estado\": \"cancelado\"\n}"
+        }
+      }
+    }
+  ]
+}

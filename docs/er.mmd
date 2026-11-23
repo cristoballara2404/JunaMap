@@ -1,0 +1,37 @@
+erDiagram
+  ESTUDIANTES ||--o{ PEDIDOS : realiza
+  ESTUDIANTES ||--o{ FAVORITOS : guarda
+  ESTUDIANTES ||--o{ RESENAS : escribe
+  LOCALES ||--o{ FAVORITOS : es_guardado
+  LOCALES ||--o{ MENU_ITEMS : ofrece
+  LOCALES ||--o| PROMOS : tiene
+  LOCALES ||--o{ RESENAS : recibe
+  PROMOS ||--o{ PEDIDOS : origina
+  LOCALES { int id PK
+    string nombre
+    geography ubicacion
+    bool convenio_vigente
+    string origen }
+  PROMOS { int id PK
+    int local_id FK
+    int precio
+    int precio_original }
+  PEDIDOS { int id PK
+    int estudiante_id FK
+    int promo_id FK
+    string codigo UK
+    string estado }
+  ESTUDIANTES { int id PK
+    string nombre
+    string correo UK
+    string clave_hash
+    string operador }
+  RESENAS { int id PK
+    int local_id FK
+    int estudiante_id FK
+    int estrellas }
+  MENU_ITEMS { int id PK
+    int local_id FK
+    int precio }
+  FAVORITOS { int estudiante_id PK
+    int local_id PK }

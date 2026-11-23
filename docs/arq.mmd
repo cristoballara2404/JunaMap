@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph C["Cliente · React SPA (Vite)"]
+    P["Pantallas: Mapa (Leaflet), Detalle, Promos, Perfil, Acceso"] --> A["api.js · fetch HTTPS/JSON + token de sesión"]
+  end
+  P -.->|"teselas del mapa"| OSM["OpenStreetMap"]
+  A -->|"/api/v1"| R
+  subgraph S["Servidor · Node.js + Express (monolito en 3 capas)"]
+    M["Middleware: sesión (JWT), límite de intentos, errores"] --> R
+    R["Rutas y controladores<br/>validan formato, delegan"] --> N["Servicios (negocio)<br/>convenio, orden, estados, cuentas (scrypt)"]
+    N --> D["Repositorios (datos)<br/>único lugar con SQL"]
+  end
+  D -->|"SQL · pg"| DB[("PostgreSQL + PostGIS")]
