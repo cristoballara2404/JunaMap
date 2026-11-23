@@ -84,7 +84,7 @@ Tabla 4. Decisiones del servidor, con alternativa comparada y desventaja asumida
 **Postura: monolito modular.** Un solo proceso Express con cuatro módulos (locales, reseñas, pedidos, estudiantes) separados por capas.
 
 - **Carga esperada:** un piloto en una sede, con del orden de decenas de locales y un pico a la hora de almuerzo. Es un supuesto de trabajo, no una medición: aún no hay usuarios reales.
-- **Tamaño del equipo:** cuatro a cinco personas. Varios servicios exigen coordinación de contratos, despliegues y fallas de red que el equipo no puede absorber en un semestre.
+- **Tamaño del equipo:** Dos a tres personas. Varios servicios exigen coordinación de contratos, despliegues y fallas de red que el equipo no puede absorber en un semestre.
 - **Costo de operación:** un servicio y una base de datos, frente a varios servicios, balanceador y mensajería.
 - **Complejidad de despliegue:** un único proceso se levanta con `npm start`.
 - **Consistencia:** crear un pedido toca estudiante, promo y pedido; en un monolito basta una consulta, en servicios separados habría que coordinar transacciones distribuidas.
