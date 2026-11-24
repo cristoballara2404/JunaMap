@@ -11,7 +11,7 @@ Proyecto semestral · INGT1003 Arquitectura de Desarrollo (Móvil y Web) · Univ
 | Integrante | Usuario de GitHub |
 |---|---|
 | Lara, Cristóbal | [@cristoballara2404](https://github.com/cristoballara2404) |
-| Oliva, Benjamín | @bnj-92 |
+| Oliva, Benjamín | [@bnj-92](https://github.com/bnj-92) |
 
 ## Enlaces
 
