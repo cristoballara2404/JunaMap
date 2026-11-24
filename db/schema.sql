@@ -2,7 +2,7 @@
 -- Uso: psql -d junamap -f db/schema.sql && psql -d junamap -f db/seed.sql
 CREATE EXTENSION IF NOT EXISTS postgis;
 
-DROP TABLE IF EXISTS favoritos, pedidos, resenas, menu_items, promos, estudiantes, locales CASCADE;
+DROP TABLE IF EXISTS sugerencias_locales, favoritos, pedidos, resenas, menu_items, promos, estudiantes, locales CASCADE;
 
 CREATE TABLE locales (
   id               SERIAL PRIMARY KEY,
@@ -85,3 +85,18 @@ CREATE TABLE pedidos (
   creado_en      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_pedidos_estudiante ON pedidos(estudiante_id, creado_en DESC);
+
+-- Locales que las y los estudiantes notifican como aceptados con la BAES; un administrador los revisa antes de publicarlos.
+CREATE TABLE sugerencias_locales (
+  id            SERIAL PRIMARY KEY,
+  estudiante_id INT NOT NULL REFERENCES estudiantes(id) ON DELETE CASCADE,
+  nombre        VARCHAR(80)  NOT NULL,
+  categoria     VARCHAR(60)  NOT NULL,
+  direccion     VARCHAR(120) NOT NULL,
+  operador      VARCHAR(10)  NOT NULL DEFAULT 'Ambos' CHECK (operador IN ('Pluxee','Edenred','Ambos')),
+  lat           DOUBLE PRECISION CHECK (lat BETWEEN -90 AND 90),
+  lng           DOUBLE PRECISION CHECK (lng BETWEEN -180 AND 180),
+  estado        VARCHAR(12)  NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','aprobado','rechazado')),
+  creado_en     TIMESTAMPTZ  NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_sugerencias_estado ON sugerencias_locales(estado, creado_en DESC);

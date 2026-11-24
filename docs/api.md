@@ -25,6 +25,8 @@ Base: `/api/v1` · Formato: JSON · Autenticación: `Authorization: Bearer <toke
 | GET | `/estudiantes/:id/favoritos` 🔒 | — | 200 | 400, 404 |
 | PUT | `/estudiantes/:id/favoritos/:localId` 🔒 | — (idempotente) | 204 | 400, 404 |
 | DELETE | `/estudiantes/:id/favoritos/:localId` 🔒 | — (idempotente) | 204 | 400, 404 |
+| POST | `/sugerencias` | sesión; `nombre`* (2–80), `direccion`* (5–120), `categoria` (2–60), `operador` (`Pluxee`\|`Edenred`\|`Ambos`), `lat` y `lng` (juntas) | 201 + sugerencia (`estado: pendiente`) | 400, 401, 429 |
+| GET | `/sugerencias` | cabecera `x-admin-key` | 200 + lista | 403 |
 
 **Códigos de estado.** 200 lectura o actualización correcta · 201 recurso creado · 204 correcto sin cuerpo · 401 falta iniciar sesión o la sesión venció (o correo/contraseña incorrectos) · 403 intentar usar datos de otra persona · 429 demasiados intentos de ingreso (10 por 15 min) · 400 formato inválido (número fuera de rango, texto vacío, JSON roto) · 404 el recurso no existe · 409 conflicto de estado (por ejemplo, cancelar un pedido ya retirado) · 422 la petición es válida pero viola una regla de negocio (local sin convenio vigente, promo más cara que el precio original) · 503 no se pudo generar un código de retiro único tras varios intentos · 500 error inesperado (sin detalles técnicos en la respuesta).
 

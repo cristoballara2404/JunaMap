@@ -75,7 +75,7 @@ export default function DetalleScreen({ id, esFavorito, onVolver, onFavorito, on
             : <span className="badge"><i />Convenio BAES vigente</span>}
         <div className="row3">
           <div className="stat"><b>{l.n_resenas ? <><span className="star">★</span> {l.calificacion}</> : '—'}</b><span>{l.n_resenas ? `${l.n_resenas} reseñas` : 'Sin reseñas'}</span></div>
-          <div className="stat"><b>Abierto</b><span>{l.horario}</span></div>
+          <div className="stat"><b>Horario</b><span>{l.horario}</span></div>
         </div>
       </div>
       <h4 className="h4 rise" style={{ '--i': 2 }}>Menú del <em>día</em></h4>

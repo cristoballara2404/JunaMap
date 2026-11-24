@@ -45,5 +45,6 @@ Detalle, datos de prueba y solución de fallas: [`docs/manual.md`](docs/manual.m
 ## Limitaciones declaradas
 
 - Inicio de sesión con correo y contraseña (hash scrypt, sesión por token firmado de 7 días guardado en el navegador). No hay recuperación de contraseña ni verificación del correo. La administración de locales (`POST/PUT/DELETE /locales`) exige la cabecera `x-admin-key` con el valor de `ADMIN_KEY` (si no se configura, queda desactivada). Cada persona puede eliminar su cuenta desde el perfil.
-- La ubicación no se lee del dispositivo: el mapa usa un punto de referencia del campus.
-- Los locales, precios, reseñas y personas son ficticios. JunaMap no muestra ni cobra el saldo de la beca.
+- El mapa pide la ubicación al navegador; si se niega, usa un punto de referencia del campus.
+- Los locales vienen de un listado del equipo y de cadenas citadas en prensa: que una cadena tenga convenio no garantiza que cada sucursal lo tenga, así que JunaMap pide confirmarlo en la app del operador. Los precios, promos y reseñas de demostración son ficticios. JunaMap no muestra ni cobra el saldo de la beca.
+- Las sugerencias de locales quedan pendientes de revisión (`GET /sugerencias` con la clave de administrador); aún no hay pantalla para aprobarlas.

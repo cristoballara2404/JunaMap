@@ -11,6 +11,7 @@ El mapa, los locales y las promos se pueden explorar sin cuenta. Para guardar fa
 3. **Detalle:** carga el local, su menú y sus reseñas; con sesión puede guardarlo en favoritos y publicar una reseña, que queda firmada con su nombre corto y su carrera.
 4. **Pedido:** «Pedir con promo» crea el pedido a nombre del estudiante autenticado, y el servidor devuelve el código de retiro.
 5. **Perfil:** lista sus pedidos, permite marcarlos como retirados o anularlos, y cambiar el operador.
+6. **Notificar un local:** con sesión, desde el mapa el estudiante envía el nombre y la dirección de un local que acepta la BAES. La sugerencia queda «pendiente» en la base de datos y no aparece en el mapa hasta que se revise.
 
 Los datos viven en PostgreSQL: al recargar la página, los pedidos, las reseñas y los favoritos siguen ahí.
 
@@ -73,7 +74,7 @@ Cambios desde el Hito 1: se agregó el versionado de la API, se reemplazó el OR
 
 ## 6. Pruebas y reproducibilidad
 
-El servidor tiene 25 pruebas automáticas sobre la capa de negocio, las validaciones y la autenticación (`npm test`): incluyen el hash de contraseñas, la firma y expiración del token y las reglas de pedidos. El proyecto se levanta siguiendo el manual (`docs/manual.md`); la base de datos puede crearse con `docker compose up -d`. El manual se escribió a partir de la instalación en el equipo del grupo y aún no se ha probado en un equipo ajeno; los pasos más propensos a requerir ajustes son la importación de locales (secciones 7 y 8 del manual), que necesita internet. Para la presentación el producto se expuso con un túnel HTTPS temporal desde el equipo del grupo, sin despliegue permanente.
+El servidor tiene 29 pruebas automáticas sobre la capa de negocio, las validaciones y la autenticación (`npm test`): incluyen el hash de contraseñas, la firma y expiración del token y las reglas de pedidos. El proyecto se levanta siguiendo el manual (`docs/manual.md`); la base de datos puede crearse con `docker compose up -d`. El manual se escribió a partir de la instalación en el equipo del grupo; los pasos más propensos a requerir ajustes son la importación de locales (secciones 7 y 8 del manual), que necesita internet. Para la presentación el producto se expuso con un túnel HTTPS temporal desde el equipo del grupo, sin despliegue permanente, y se probó desde otros dispositivos con el túnel activo: el flujo principal (mapa, cuenta, detalle, pedido y perfil) se recorrió desde un equipo distinto al que corre el servidor.
 
 ## 7. Limitaciones
 
@@ -84,6 +85,7 @@ El servidor tiene 25 pruebas automáticas sobre la capa de negocio, las validaci
 - Los locales provienen de un listado del equipo con direcciones convertidas a coordenadas (algunas aproximadas, por calle) y de sucursales de cadenas citadas en prensa. Que una cadena esté adherida a la tarjeta Junaeb no garantiza que cada sucursal lo esté; la fuente oficial (los buscadores de Pluxee y Edenred) no está integrada, y la app no afirma que ningún comercio acepte la beca. Las cadenas provienen de lo que cita la prensa (Vásquez, 2026; Canal 13, s. f.).
 - Los logos pertenecen a las marcas respectivas y se usan solo con fines académicos, sin implicar relación con ellas.
 - Los precios, promos y reseñas de demostración son ficticios. Si el estudiante niega el permiso de ubicación, se usa un punto de referencia.
+- Las sugerencias de locales solo se pueden listar con la clave de administrador (`GET /sugerencias`): todavía no hay pantalla de revisión ni forma de aprobarlas o rechazarlas, y no se verifica que el local exista.
 - No hay pruebas automáticas de la interfaz ni de los repositorios contra una base real.
 
 ## 8. Conclusión
@@ -93,7 +95,7 @@ Qué se logró: un flujo completo desde la interfaz hasta la base de datos y de 
 ## 9. Bibliografía
 
 - 24horas. (2025, 4 de marzo). *Junaeb confirma nueva alza de la beca BAES 2025: fecha de pago y monto*. https://www.24horas.cl/te-sirve/junaeb-nueva-alza-beca-baes-2025-fecha-pago-monto
-- Vásquez, R. (2026, 19 de marzo). *¿Dónde aceptan la tarjeta Junaeb? Revisa los comercios asociados y las restricciones de la Beca BAES 2026*. Canal 13.
+- Vásquez, R. (2026, 19 de marzo). *¿Dónde aceptan la tarjeta Junaeb? Revisa los comercios asociados y las restricciones de la Beca BAES 2026*. Canal 13. https://www.13.cl/programas/noticias-13/servicios/donde-aceptan-la-tarjeta-junaeb-revisa-los-comercios-asociados-y
 - React. (s. f.). *React documentation*. https://react.dev/
 - Vite. (s. f.). *Vite guide*. https://vite.dev/guide/
 - Express. (s. f.). *Express*. https://expressjs.com/
@@ -109,7 +111,7 @@ Qué se logró: un flujo completo desde la interfaz hasta la base de datos y de 
 
 | Herramienta | Para qué se usó | Cómo se verificó |
 |---|---|---|
-| Claude (Anthropic) | Borrador del servidor, del esquema SQL, de la interfaz React y de la documentación | 25 pruebas automáticas, revisión del equipo y recorrido manual del flujo principal en el navegador |
+| Claude (Anthropic) | Borrador del servidor, del esquema SQL, de la interfaz React y de la documentación | 29 pruebas automáticas, revisión del equipo y recorrido manual del flujo principal en el navegador |
 
 Todo integrante debe poder explicar cualquier parte del código entregado. Lo que no coincidía con el código real al contrastar los documentos con el repositorio (cifras de pruebas, campos de peticiones, funciones listadas como pendientes que ya existían) se corrigió a mano.
 

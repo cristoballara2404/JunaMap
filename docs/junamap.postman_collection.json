@@ -338,6 +338,58 @@
       }
     },
     {
+      "name": "8. Notificar un local (estudiante con sesión)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/sugerencias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "sugerencias"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Fuente de Soda El Parrón\",\n  \"direccion\": \"Av. Recoleta 1500\",\n  \"operador\": \"Ambos\"\n}"
+        }
+      }
+    },
+    {
+      "name": "9. Listar sugerencias (administración)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-admin-key",
+            "value": "{{admin_key}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base}}/sugerencias",
+          "host": [
+            "{{base}}"
+          ],
+          "path": [
+            "sugerencias"
+          ],
+          "query": []
+        }
+      }
+    },
+    {
       "name": "Error 400: latitud inválida",
       "request": {
         "method": "GET",

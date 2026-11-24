@@ -3,9 +3,10 @@ import { asyncH } from '../middleware/errors.js';
 import { soloPropio } from '../middleware/sesion.js';
 import { limitar } from '../middleware/limite.js';
 
-export function crearRutas({ locales, resenas, pedidos, estudiantes, auth, sesion, admin }) {
+export function crearRutas({ locales, resenas, pedidos, estudiantes, auth, sugerencias, sesion, admin }) {
   const r = Router();
   const limiteLogin = limitar({ ventanaMs: 15 * 60_000, max: 10, clave: (req) => `${req.ip}|${String(req.body?.correo ?? '').toLowerCase()}` });
+  const limiteSugerencia = limitar({ ventanaMs: 60 * 60_000, max: 10, clave: (req) => String(req.estudianteId) });
   const limiteRegistro = limitar({ ventanaMs: 60 * 60_000, max: 10, clave: (req) => req.ip });
 
   r.get('/salud', (_req, res) => res.json({ estado: 'ok' }));
@@ -42,5 +43,10 @@ export function crearRutas({ locales, resenas, pedidos, estudiantes, auth, sesio
   r.get('/estudiantes/:id/favoritos', asyncH(estudiantes.favoritos));
   r.put('/estudiantes/:id/favoritos/:localId', asyncH(estudiantes.agregarFavorito));
   r.delete('/estudiantes/:id/favoritos/:localId', asyncH(estudiantes.quitarFavorito));
+
+  // Sugerencias de locales: cualquier estudiante con sesión notifica; solo la administración las lista
+  r.post('/sugerencias', sesion, limiteSugerencia, asyncH(sugerencias.crear));
+  r.get('/sugerencias', admin, asyncH(sugerencias.listar));
+
   return r;
 }

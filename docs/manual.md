@@ -17,7 +17,7 @@
 
 La base trae datos ficticios: 4 locales (Fuente de Soda Doña Rosa, La Esquina del Completo, Sushi Express Campus y Café Libreta), sus promos, menús y reseñas, y una estudiante de ejemplo (Camila Reyes) con 3 pedidos anteriores; esa cuenta del seed no tiene correo ni contraseña, así que no se puede ingresar con ella. Para probar, toca **Ingresar → Crear cuenta** y registra la tuya.
 
-**Si ya tenías la base creada:** ejecuta `psql -d junamap -f db/migracion_login.sql` para agregar el inicio de sesión sin borrar datos.
+**Si ya tenías la base creada:** ejecuta `psql -d junamap -f db/migracion_login.sql` (inicio de sesión) y `psql -d junamap -f db/migracion_sugerencias.sql` (notificar locales) para agregarlos sin borrar datos.
 
 ## 4. Cómo usar el producto (flujo principal)
 
@@ -66,9 +66,9 @@ El importador trae sucursales **reales** de las cadenas que la prensa cita como 
 
 **Importante:** que una cadena esté adherida no garantiza que cada sucursal acepte la beca. La app no lo afirma; el estudiante debe confirmarlo en el buscador oficial de Pluxee o Edenred.
 
-## 8. Locales verificados desde el buscador oficial (CSV)
+## 8. Locales del listado del equipo (CSV)
 
-Para tener locales de comida con convenio comprobado, un integrante los busca en el buscador oficial de Pluxee (https://www.pluxee.cl/merchant-finder/es-CL?pluxeeProducts=JUNAEB&merchantTypes=PHYSICAL_AND_ECOM%7CPHYSICAL) y los anota en `db/locales_verificados.csv`, una fila por local:
+Para cargar locales de comida con convenio publicado por el operador, un integrante los busca en el buscador oficial de Pluxee (https://www.pluxee.cl/merchant-finder/es-CL?pluxeeProducts=JUNAEB&merchantTypes=PHYSICAL_AND_ECOM%7CPHYSICAL) y los anota en `db/locales_verificados.csv`, una fila por local:
 
 ```
 nombre,categoria,direccion,horario,lat,lng
@@ -80,7 +80,7 @@ Las coordenadas se obtienen con clic derecho sobre el lugar en Google Maps. Lueg
 node --env-file=.env scripts/importar-csv.js ..\db\locales_verificados.csv "Buscador de Pluxee, 23-11-2026"
 ```
 
-Esos locales muestran «Convenio verificado por el equipo en el buscador oficial». Anota siempre la fecha de verificación: el convenio cambia con el tiempo.
+Esos locales muestran «Cadena con convenio Junaeb publicado · confirma en tu app»: JunaMap no garantiza que cada sucursal acepte la tarjeta. Anota siempre la fecha de consulta: el convenio cambia con el tiempo.
 
 ## 9. Si «no aparece ningún local»
 

@@ -1,18 +1,12 @@
 node_modules/
-.env
 dist/
 *.log
 .DS_Store
-
-# Datos personales reales y respaldos locales (nunca al repositorio)
-respaldo_*.sql
-*.dump
-
-# Cachés de scripts, borradores y archivos sueltos
-server/scripts/.*-cache.json
-client/src/styles-naranja-original.css
-client/src/styles-violeta.css
-db/locales_junaeb_excel_original*.csv
-/package-lock.json
-docs/_tmp*
+# Secretos y datos personales: nunca al repositorio
+.env
+.env.*
+!.env.example
+respaldo*.sql
 *.zip
+# Cachés de scripts de importación
+server/scripts/.*-cache.json

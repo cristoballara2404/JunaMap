@@ -1,4 +1,5 @@
 erDiagram
+  ESTUDIANTES ||--o{ SUGERENCIAS_LOCALES : notifica
   ESTUDIANTES ||--o{ PEDIDOS : realiza
   ESTUDIANTES ||--o{ FAVORITOS : guarda
   ESTUDIANTES ||--o{ RESENAS : escribe
@@ -35,3 +36,8 @@ erDiagram
     int precio }
   FAVORITOS { int estudiante_id PK
     int local_id PK }
+  SUGERENCIAS_LOCALES { int id PK
+    int estudiante_id FK
+    string nombre
+    string direccion
+    string estado }

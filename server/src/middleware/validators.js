@@ -114,3 +114,19 @@ export function validarResenaSesion(body = {}) {
     comentario: texto(body.comentario, 'comentario', 5, 300),
   };
 }
+
+/** Local que un estudiante notifica: nombre y dirección obligatorios; categoría, operador y coordenadas opcionales. */
+export function validarSugerencia(b = {}) {
+  const OPERADORES = ['Pluxee', 'Edenred', 'Ambos'];
+  const conLat = b.lat !== undefined && b.lat !== null && b.lat !== '';
+  const conLng = b.lng !== undefined && b.lng !== null && b.lng !== '';
+  if (conLat !== conLng) throw bad('Envía latitud y longitud juntas, o ninguna.');
+  return {
+    nombre: texto(b.nombre, 'nombre', 2, 80),
+    direccion: texto(b.direccion, 'direccion', 5, 120),
+    categoria: b.categoria === undefined ? 'Local de comida' : texto(b.categoria, 'categoria', 2, 60),
+    operador: b.operador === undefined ? 'Ambos' : opcion(b.operador, 'operador', OPERADORES),
+    lat: conLat ? numero(b.lat, 'lat', -90, 90) : null,
+    lng: conLng ? numero(b.lng, 'lng', -180, 180) : null,
+  };
+}

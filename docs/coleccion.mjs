@@ -2,8 +2,8 @@
 // Orden de uso: 0a/0b (sesión) -> 1 a 4 (CRUD de locales) -> 5 a 8 (pedidos) -> errores.
 import { writeFileSync } from 'node:fs';
 const base = '{{base}}';
-const esAdmin = (m, p) => m !== 'GET' && p.startsWith('/locales') && !p.includes('?');
-const privada = (p) => p.startsWith('/pedidos');
+const esAdmin = (m, p) => (m !== 'GET' && p.startsWith('/locales') && !p.includes('?')) || (m === 'GET' && p === '/sugerencias');
+const privada = (p, m) => p.startsWith('/pedidos') || (p === '/sugerencias' && m === 'POST');
 const guardar = (lineas) => [{ listen: 'test', script: { type: 'text/javascript', exec: lineas } }];
 const r = (name, method, path, body, tests) => ({
   name,
@@ -13,7 +13,7 @@ const r = (name, method, path, body, tests) => ({
     header: [
       ...(body ? [{ key: 'Content-Type', value: 'application/json' }] : []),
       ...(esAdmin(method, path) ? [{ key: 'x-admin-key', value: '{{admin_key}}' }] : []),
-      ...(privada(path) ? [{ key: 'Authorization', value: 'Bearer {{token}}' }] : []),
+      ...(privada(path, method) ? [{ key: 'Authorization', value: 'Bearer {{token}}' }] : []),
     ],
     url: { raw: `${base}${path}`, host: [base], path: path.replace(/\?.*/, '').split('/').filter(Boolean), query: path.includes('?') ? path.split('?')[1].split('&').map((p) => ({ key: p.split('=')[0], value: p.split('=')[1] })) : [] },
     ...(body ? { body: { mode: 'raw', raw: JSON.stringify(body, null, 2) } } : {}),
@@ -42,6 +42,8 @@ const col = {
     r('5. Crear pedido con promo (guarda su id)', 'POST', '/pedidos', { promo_id: 1 }, ["const d = pm.response.json();", "pm.collectionVariables.set('pedido_id', d.id);"]),
     r('6. Listar mis pedidos', 'GET', '/pedidos'),
     r('7. Actualizar: marcar el pedido como retirado', 'PATCH', '/pedidos/{{pedido_id}}', { estado: 'retirado' }),
+    r('8. Notificar un local (estudiante con sesión)', 'POST', '/sugerencias', { nombre: 'Fuente de Soda El Parrón', direccion: 'Av. Recoleta 1500', operador: 'Ambos' }),
+    r('9. Listar sugerencias (administración)', 'GET', '/sugerencias'),
     r('Error 400: latitud inválida', 'GET', '/locales?lat=abc&lng=-70.6'),
     r('Error 404: local inexistente', 'GET', '/locales/9999'),
     r('Error 409: cancelar un pedido ya retirado', 'PATCH', '/pedidos/{{pedido_id}}', { estado: 'cancelado' }),

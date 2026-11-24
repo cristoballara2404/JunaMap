@@ -27,6 +27,7 @@ async function pedir(ruta, { method = 'GET', body } = {}) {
 }
 
 export const api = {
+  sugerirLocal: (body) => pedir('/sugerencias', { method: 'POST', body }),
   registro: (datos) => pedir('/auth/registro', { method: 'POST', body: datos }),
   login: (datos) => pedir('/auth/login', { method: 'POST', body: datos }),
   locales: ({ lat = CAMPUS.lat, lng = CAMPUS.lng, orden = 'cercania', soloMenu = false, radio = 400 } = {}) =>

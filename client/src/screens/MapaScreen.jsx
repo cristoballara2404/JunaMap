@@ -3,6 +3,8 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { api } from '../api.js';
 import { Estado, Tile, clp, distanciaM, logoFuentes, useAsync } from '../util.jsx';
+import { useSesion } from '../sesion.js';
+
 
 const FILTROS = [
   ['near', 'Más cerca', { orden: 'cercania' }],
@@ -44,6 +46,19 @@ export default function MapaScreen({ ubic, onAbrir }) {
   const [filtro, setFiltro] = useState('near');
   const [vista, setVista] = useState(null);
   const [sel, setSel] = useState(null);
+  const ses = useSesion();
+  const [abiertoSug, setAbiertoSug] = useState(false);
+  const [sug, setSug] = useState({ nombre: '', categoria: 'Comida rápida', direccion: '', operador: 'Ambos' });
+  const [sugMsg, setSugMsg] = useState('');
+  async function enviarSugerencia() {
+    setSugMsg('');
+    try {
+      await api.sugerirLocal(sug);
+      setSug({ nombre: '', categoria: 'Comida rápida', direccion: '', operador: 'Ambos' });
+      setSugMsg('¡Gracias! Local notificado para verificación.');
+      setTimeout(() => { setAbiertoSug(false); setSugMsg(''); }, 1600);
+    } catch (e) { setSugMsg(e.message); }
+  }
   const divRef = useRef(null), mapRef = useRef(null), capaRef = useRef(null), yoRef = useRef(null);
   const deselRef = useRef(null), timer = useRef(null);
   deselRef.current = () => setSel(null);
@@ -147,7 +162,27 @@ export default function MapaScreen({ ubic, onAbrir }) {
         <div className="grab" />
         <div className="chips">
           {FILTROS.map(([k, t]) => <button key={k} className={`chip ${filtro === k ? 'on' : ''}`} onClick={() => { setFiltro(k); setSel(null); }}>{t}</button>)}
+          <button className={`chip ${abiertoSug ? 'on' : ''}`} onClick={() => setAbiertoSug((v) => !v)}>+ Notificar local</button>
         </div>
+
+        {abiertoSug && (
+          <div className="rform" style={{ marginBottom: 12 }}>
+            <b style={{ fontSize: 14 }}>Notificar local que acepta BAES</b>
+            {!ses ? (
+              <span style={{ fontSize: 13, color: 'var(--muted)' }}>Inicia sesión en la pestaña Ingresar para notificar un local.</span>
+            ) : (<>
+              <input placeholder="Nombre del local" value={sug.nombre} onChange={(e) => setSug({ ...sug, nombre: e.target.value })} />
+              <input placeholder="Dirección (ej. Av. Providencia 1234)" value={sug.direccion} onChange={(e) => setSug({ ...sug, direccion: e.target.value })} />
+              <select value={sug.operador} onChange={(e) => setSug({ ...sug, operador: e.target.value })}>
+                <option value="Ambos">Acepta Pluxee y Edenred</option>
+                <option value="Pluxee">Solo Pluxee</option>
+                <option value="Edenred">Solo Edenred</option>
+              </select>
+              {sugMsg && <span className="msg">{sugMsg}</span>}
+              <button className="btn teal" onClick={enviarSugerencia}>Enviar notificación</button>
+            </>)}
+          </div>
+        )}
         <div className="loc-line">
           {esperando ? 'Buscando tu ubicación…' : origen}
           {ubic.origen !== 'gps' && !esperando && <> · <a href="#" onClick={(e) => { e.preventDefault(); ubic.pedir(); }}>Usar mi ubicación</a></>}

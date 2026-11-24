@@ -20,7 +20,7 @@ Tabla 1. Qué se movió desde el Hito 1, por qué y con qué impacto.
 
 ## 3. Diseño de la API REST
 
-La API expone cinco recursos: locales (con su menú y su promo), reseñas, pedidos, estudiantes y favoritos. Tabla 2 es el contrato completo; `*` marca parámetros obligatorios. Los códigos de estado siguen el significado definido para HTTP (MDN Web Docs, s. f.): 2xx éxito, 400 formato inválido, 401/403 sesión o permiso, 404 recurso inexistente, 409 conflicto de estado, 422 regla de negocio y 429 límite de intentos.
+La API expone cinco recursos: locales (con su menú y su promo), reseñas, pedidos, estudiantes y favoritos, más las sugerencias de locales que notifican los estudiantes. Tabla 2 es el contrato completo; `*` marca parámetros obligatorios. Los códigos de estado siguen el significado definido para HTTP (MDN Web Docs, s. f.): 2xx éxito, 400 formato inválido, 401/403 sesión o permiso, 404 recurso inexistente, 409 conflicto de estado, 422 regla de negocio y 429 límite de intentos.
 
 Tabla 2. Contrato de la API (rutas, verbos, parámetros y códigos de estado).
 
@@ -84,7 +84,7 @@ Tabla 4. Decisiones del servidor, con alternativa comparada y desventaja asumida
 **Postura: monolito modular.** Un solo proceso Express con cuatro módulos (locales, reseñas, pedidos, estudiantes) separados por capas.
 
 - **Carga esperada:** un piloto en una sede, con del orden de decenas de locales y un pico a la hora de almuerzo. Es un supuesto de trabajo, no una medición: aún no hay usuarios reales.
-- **Tamaño del equipo:** cuatro a cinco personas. Varios servicios exigen coordinación de contratos, despliegues y fallas de red que el equipo no puede absorber en un semestre.
+- **Tamaño del equipo:** dos personas. Varios servicios exigen coordinación de contratos, despliegues y fallas de red que un equipo de dos no puede absorber en un semestre.
 - **Costo de operación:** un servicio y una base de datos, frente a varios servicios, balanceador y mensajería.
 - **Complejidad de despliegue:** un único proceso se levanta con `npm start`.
 - **Consistencia:** crear un pedido toca estudiante, promo y pedido; en un monolito basta una consulta, en servicios separados habría que coordinar transacciones distribuidas.
@@ -93,7 +93,7 @@ Tabla 4. Decisiones del servidor, con alternativa comparada y desventaja asumida
 
 ## 8. Pruebas
 
-La capa de negocio y las validaciones tenían 14 pruebas automáticas al cerrar este hito; hoy son 25, tras agregar las de cuentas y administración (`cd server && npm test`, con el ejecutor de pruebas integrado de Node.js; Node.js, s. f.) que cubren: radio por defecto, solo convenios vigentes, orden por cercanía y por calificación, regla de la promo, cobro dividido, reintento de código, transiciones de estado inválidas y validaciones de entrada. La colección `docs/junamap.postman_collection.json` reúne las peticiones de la demostración, en orden: iniciar sesión (guarda el token), leer, crear, actualizar y borrar un local, crear, listar y actualizar un pedido, y tres casos de error (400, 404 y 409). Se importa en Postman y se ejecuta contra el servidor levantado, con la variable `base` apuntando a `http://localhost:3000/api/v1` y `admin_key` con el valor de `ADMIN_KEY`. La demostración en sala se hace en vivo con esas mismas peticiones.
+La capa de negocio y las validaciones tenían 14 pruebas automáticas al cerrar este hito; hoy son 29, tras agregar las de cuentas, administración y sugerencias de locales (`cd server && npm test`, con el ejecutor de pruebas integrado de Node.js; Node.js, s. f.) que cubren: radio por defecto, solo convenios vigentes, orden por cercanía y por calificación, regla de la promo, cobro dividido, reintento de código, transiciones de estado inválidas y validaciones de entrada. La colección `docs/junamap.postman_collection.json` reúne las peticiones de la demostración, en orden: iniciar sesión (guarda el token), leer, crear, actualizar y borrar un local, crear, listar y actualizar un pedido, notificar un local (estudiante) y listar las sugerencias (administración), y tres casos de error (400, 404 y 409). Se importa en Postman y se ejecuta contra el servidor levantado, con la variable `base` apuntando a `http://localhost:3000/api/v1` y `admin_key` con el valor de `ADMIN_KEY`. La demostración en sala se hace en vivo con esas mismas peticiones.
 
 ## 9. Conclusión
 
